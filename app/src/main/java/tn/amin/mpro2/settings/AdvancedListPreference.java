@@ -71,7 +71,6 @@ public class AdvancedListPreference extends Preference {
         buttonAdd.setOnClickListener(view -> {
             Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
             intent.setType("*/*");
-//            ((Activity) getContext()).startActivityForResult(intent, );
             throw new UnsupportedOperationException();
         });
 

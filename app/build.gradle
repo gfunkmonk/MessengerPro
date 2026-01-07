@@ -70,7 +70,6 @@ dependencies {
     implementation 'io.github.neonorbit:dexplore:1.4.5'
     implementation ("com.google.guava:guava:33.0.0-android")
     compileOnly 'de.robv.android.xposed:api:82'
-//    compileOnly 'de.robv.android.xposed:api:82:sources'
 }
 
 spotless {
