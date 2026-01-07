@@ -53,18 +53,6 @@ public class TypingIndicatorReceivedHook extends BaseHook {
 
             return false;
         }), this::wrapIgnoreWorking);
-
-//                   TODO use this for messages history
-//
-//                    Object messageObject = intent.getParcelableExtra("extra_message");
-//
-//                    Logger.info("Received a new message ! " + messageObject);
-//
-//                    if (messageObject != null) {
-//                        MessageWrapper message = new MessageWrapper(gateway, messageObject);
-//                        Logger.logObjectRecursive(message);
-//                    }
-//                }
     }
 
     public interface TypingIndicatorReceivedListener {

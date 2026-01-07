@@ -71,32 +71,7 @@ public class TextBrowser {
                     nextPriority = Math.min(nextPriority, nodeScanner.getPriority());
                 }
             }
-//            Character c = string.charAt(i);
-//                    String openingDelimiter = nodePortal.getOpeningDelimiter();
-//                    int delimiterLength = openingDelimiter.length();
-//                    if (i <= text.length() - delimiterLength) {
-//                        if (text.substring(i, i + delimiterLength).equals(openingDelimiter)) {
-//                            NodeParser.Result parseResult =
-//                                    nodePortal.getParser().parse(text, i + delimiterLength, endIndex, this);
-//                            if (parseResult != null) {
-////                                if (i > textCursor)
-////                                    browsedNodes.add(new TextNode(text.substring(textCursor, i)));
-//                                parseResults.add(parseResult);
-//                                processedRanges.add(new IntRange(i, parseResult.endIndex));
-//
-//                                i = parseResult.endIndex + 1;
-//                                textCursor = i;
-//                            }
-//                        }
-//                    }
-//                } else if (nodePortal.getPriority() > priority) {
-//                    nextPriority = Math.min(nextPriority, nodePortal.getPriority());
-//                }
         }
-
-//        if (textCursor < endIndex) {
-//            browsedNodes.add(new TextNode(text.substring(textCursor, endIndex)));
-//        }
 
         return nextPriority;
     }

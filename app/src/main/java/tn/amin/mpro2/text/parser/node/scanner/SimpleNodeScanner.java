@@ -42,9 +42,6 @@ public class SimpleNodeScanner extends NodeScanner {
                 return new SimpleNodePortal(beginIndex, index + closingDelimiterLength,
                         beginIndex + openingDelimiterLength, index,
                         children -> new DelimNode(children, mOpeningDelimiter, mClosingDelimiter));
-//                return new NodeParser.Result(
-//                        new DelimNode(browser.browse(text, beginIndex, index), mOpeningDelimiter, mClosingDelimiter),
-//                        beginIndex, index+closingDelimiterLength-1);
             }
         }
 
