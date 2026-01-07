@@ -26,9 +26,6 @@ public class MethodHookLogParams extends XC_MethodHook {
                 }
             }
         }
-//        if (param.method.toString().contains("getIsUnsent")) {
-//            param.setResult(false);
-//        }
         Logger.verbose(".E......................................................");
     }
 }

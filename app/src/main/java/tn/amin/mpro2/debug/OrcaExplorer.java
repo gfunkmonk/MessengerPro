@@ -56,25 +56,6 @@ public class OrcaExplorer {
         hookAllDispatch("Cowatch", classLoader);
         hookAllDispatch("Copresence", classLoader);
         hookAllDispatch("BroadcastFlow", classLoader);
-
-        // hookMethodAndLogParams("com.facebook.messenger.notification.engine.MSGOpenPathRenderedNotification",
-        // "getIsUnsent", classLoader);
-        // hookAllDispatch("Community", classLoader);
-        // hookConstructorAndLogParams("com.facebook.msys.mci.Attachment", classLoader);
-        // hookConstructorAndLogST("com.facebook.attachments.mca.MailboxAttachmentsJNI",
-        // classLoader);
-        // hookMethodAndLogParams("com.facebook.msys.mci.Attachment",
-        // "getAttachmentType", classLoader);
-
-//        hookMethodAndLogParams("com.facebook.core.mca.MailboxCoreJNI", "dispatchVIIIJJOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO", classLoader);
-//        hookMethodAndLogParams("com.facebook.core.mca.MailboxCoreJNI", "dispatchVIJOOOOOOOOOOOOOOOOOOOO", classLoader);
-//        hookMethodAndLogST("com.facebook.msys.mci.Execution", "nativeScheduleTask", classLoader);
-//        hookMethodAndLogST("com.facebook.msys.mci.NotificationCenter", "dispatchNotificationToCallbacks", classLoader);
-//        hookMethodAndLogST("android.app.NotificationManager", "notify", classLoader);
-//        hookConstructorAndLogST("com.facebook.messaging.notify.type.NewMessageNotification", classLoader);
-//        hookConstructorAndLogParams("com.facebook.secure.secrettypes.SecretString", classLoader);
-//        hookConstructorAndLogST("com.facebook.messenger.notification.engine.MSGOpenPathRenderedNotification", classLoader);
-//        hookConstructorAndLogParams("com.facebook.msys.mci.Attachment", classLoader);
     }
 
     public static void exploreUI(OrcaGateway gateway, Activity activity) {

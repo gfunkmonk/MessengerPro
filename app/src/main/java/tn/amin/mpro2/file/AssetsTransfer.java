@@ -9,6 +9,8 @@ import androidx.documentfile.provider.DocumentFile;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import tn.amin.mpro2.debug.Logger;
+
 public class AssetsTransfer {
 
     private final Context mContext;
@@ -61,7 +63,8 @@ public class AssetsTransfer {
             }
             return res;
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Failed to copy asset folder: " + source);
+            Logger.error(e);
             return false;
         }
     }
@@ -82,7 +85,8 @@ public class AssetsTransfer {
             out = null;
             return true;
         } catch(Exception e) {
-            e.printStackTrace();
+            Logger.error("Failed to copy asset: " + source);
+            Logger.error(e);
             return false;
         }
     }

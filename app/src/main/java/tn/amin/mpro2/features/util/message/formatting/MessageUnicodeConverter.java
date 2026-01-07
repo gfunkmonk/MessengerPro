@@ -45,8 +45,6 @@ public class MessageUnicodeConverter
 			formattedText = text;
 		}
 
-//		Logger.log("Formatted sb is " + formattedTextBuilder);
-//		Logger.log("Formatted string is " + formattedText);
 		return formattedText;
 	}
 	

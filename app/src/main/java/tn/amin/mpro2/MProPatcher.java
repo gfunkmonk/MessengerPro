@@ -148,9 +148,6 @@ public class MProPatcher implements
         }
 
         else if (mPendingWarning != null) {
-//            doOnActivitySet(() -> new Handler(Looper.getMainLooper()).postDelayed(() -> {
-//                showWarningDialog(mPendingWarning);
-//            }, 500));
             doOnActivitySet(() -> new Handler(Looper.getMainLooper()).post(() -> {
                 Toast.makeText(getContext(), mPendingWarning, Toast.LENGTH_LONG).show();
             }));
