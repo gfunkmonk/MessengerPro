@@ -1,11 +1,11 @@
 package tn.amin.mpro2.hook.all;
 
-import java.util.Arrays;
 import java.util.Set;
 
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+
 import tn.amin.mpro2.constants.OrcaClassNames;
 import tn.amin.mpro2.debug.Logger;
 import tn.amin.mpro2.hook.BaseHook;
@@ -16,8 +16,9 @@ import tn.amin.mpro2.orca.datatype.Mention;
 import tn.amin.mpro2.orca.datatype.TextMessage;
 
 public class MessageSentHook extends BaseHook {
-    public static final String DISPATCH_METHOD = "dispatchVIJOOOOOOOOOOOOOOOOOOOOOO";
-//    public static final String DISPATCH_METHOD = "dispatchVIJOOOOOOOOOOOOOOOOOOOO";
+
+    public static final String DISPATCH_METHOD =
+            "dispatchVIJOOOOOOOOOOOOOOOOOOOOOO";
 
     public MessageSentHook() {
         super();
@@ -29,54 +30,192 @@ public class MessageSentHook extends BaseHook {
     }
 
     @Override
-    protected Set<XC_MethodHook.Unhook> injectInternal(OrcaGateway gateway) {
-        final Class<?> MailboxCoreJNI = XposedHelpers.findClass(OrcaClassNames.MAILBOX_CORE_JNI, gateway.classLoader);
+    protected Set<XC_MethodHook.Unhook> injectInternal(
+            OrcaGateway gateway
+    ) {
 
-        return XposedBridge.hookAllMethods(MailboxCoreJNI, DISPATCH_METHOD, wrap(new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+        try {
 
-                if (param.args[5] instanceof String) {
+            final Class<?> mailboxCoreJNI =
+                    XposedHelpers.findClassIfExists(
+                            OrcaClassNames.MAILBOX_CORE_JNI,
+                            gateway.classLoader
+                    );
 
-//                    java.util.logging.Logger logger = java.util.logging.Logger.getLogger(this.getClass().getName());
-//                    logger.warning("sent ! " + Arrays.toString(param.args));
+            if (mailboxCoreJNI == null) {
 
-                    Long threadKey = (Long) param.args[2];
-                    String message = (String) param.args[5];
+                Logger.error(
+                        "MailboxCoreJNI class not found"
+                );
 
-                    String rangeStartsString = (String) param.args[7];
-                    String rangeEndsString = (String) param.args[8];
-                    String threadKeysString = (String) param.args[9];
-                    String typesString = (String) param.args[10];
-                    String replyMessageId = (String) param.args[11];
-                    TextMessage originalMessage = new TextMessage.Builder(message)
-                            .setMentions(Mention.fromDispatchArgs(message, rangeStartsString, rangeEndsString, threadKeysString, typesString))
-                            .setReplyMessageId(replyMessageId)
-                            .build();
-
-                    notifyListenersWithResult((listener) -> ((MessageSentListener) listener).onMessageSent(originalMessage, threadKey));
-
-                    if (getListenersReturnValue().isConsumed && getListenersReturnValue().value == null) {
-                        param.setResult(null);
-                        return;
-                    }
-
-                    TextMessage refinedMessage = (TextMessage) getListenersReturnValue().value;
-                    if (refinedMessage == null) return;
-
-                    Logger.logObjectRecursive(refinedMessage);
-                    param.args[5] = refinedMessage.content;
-                    param.args[7] = Mention.joinRangeStarts(refinedMessage.mentions);
-                    param.args[8] = Mention.joinRangeEnds(refinedMessage.mentions);
-                    param.args[9] = Mention.joinThreadKeys(refinedMessage.mentions);
-                    param.args[10] = Mention.joinTypes(refinedMessage.mentions);
-                    param.args[11] = refinedMessage.replyMessageId;
-                }
+                return null;
             }
-        }));
+
+            return XposedBridge.hookAllMethods(
+                    mailboxCoreJNI,
+                    DISPATCH_METHOD,
+
+                    wrap(new XC_MethodHook() {
+
+                        @Override
+                        protected void beforeHookedMethod(
+                                MethodHookParam param
+                        ) {
+
+                            try {
+
+                                if (param.args == null)
+                                    return;
+
+                                if (param.args.length < 12) {
+
+                                    Logger.error(
+                                            "Unexpected send args length: "
+                                                    + param.args.length
+                                    );
+
+                                    return;
+                                }
+
+                                if (!(param.args[5] instanceof String))
+                                    return;
+
+                                Long threadKey = null;
+
+                                if (param.args[2] instanceof Long) {
+                                    threadKey =
+                                            (Long) param.args[2];
+                                }
+
+                                String message =
+                                        (String) param.args[5];
+
+                                String rangeStartsString =
+                                        safeString(param.args[7]);
+
+                                String rangeEndsString =
+                                        safeString(param.args[8]);
+
+                                String threadKeysString =
+                                        safeString(param.args[9]);
+
+                                String typesString =
+                                        safeString(param.args[10]);
+
+                                String replyMessageId =
+                                        safeString(param.args[11]);
+
+                                TextMessage originalMessage =
+                                        new TextMessage.Builder(message)
+
+                                                .setMentions(
+                                                        Mention.fromDispatchArgs(
+                                                                message,
+                                                                rangeStartsString,
+                                                                rangeEndsString,
+                                                                threadKeysString,
+                                                                typesString
+                                                        )
+                                                )
+
+                                                .setReplyMessageId(
+                                                        replyMessageId
+                                                )
+
+                                                .build();
+
+                                notifyListenersWithResult(listener ->
+
+                                        ((MessageSentListener) listener)
+                                                .onMessageSent(
+                                                        originalMessage,
+                                                        threadKey
+                                                )
+                                );
+
+                                HookListenerResult<?> result =
+                                        getListenersReturnValue();
+
+                                if (result == null)
+                                    return;
+
+                                if (result.isConsumed &&
+                                        result.value == null) {
+
+                                    param.setResult(null);
+
+                                    return;
+                                }
+
+                                if (!(result.value instanceof TextMessage))
+                                    return;
+
+                                TextMessage refinedMessage =
+                                        (TextMessage) result.value;
+
+                                if (refinedMessage == null)
+                                    return;
+
+                                Logger.logObjectRecursive(
+                                        refinedMessage
+                                );
+
+                                param.args[5] =
+                                        refinedMessage.content;
+
+                                param.args[7] =
+                                        Mention.joinRangeStarts(
+                                                refinedMessage.mentions
+                                        );
+
+                                param.args[8] =
+                                        Mention.joinRangeEnds(
+                                                refinedMessage.mentions
+                                        );
+
+                                param.args[9] =
+                                        Mention.joinThreadKeys(
+                                                refinedMessage.mentions
+                                        );
+
+                                param.args[10] =
+                                        Mention.joinTypes(
+                                                refinedMessage.mentions
+                                        );
+
+                                param.args[11] =
+                                        refinedMessage.replyMessageId;
+
+                            } catch (Throwable t) {
+
+                                Logger.error(t);
+                            }
+                        }
+                    })
+            );
+
+        } catch (Throwable t) {
+
+            Logger.error(t);
+
+            return null;
+        }
+    }
+
+    private String safeString(Object value) {
+
+        if (value instanceof String) {
+            return (String) value;
+        }
+
+        return null;
     }
 
     public interface MessageSentListener {
-        HookListenerResult<TextMessage> onMessageSent(TextMessage message, Long threadKey);
+
+        HookListenerResult<TextMessage> onMessageSent(
+                TextMessage message,
+                Long threadKey
+        );
     }
 }
