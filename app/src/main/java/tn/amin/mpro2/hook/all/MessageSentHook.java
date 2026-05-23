@@ -80,12 +80,10 @@ public class MessageSentHook extends BaseHook {
                                 if (!(param.args[5] instanceof String))
                                     return;
 
-                                Long threadKey = null;
-
-                                if (param.args[2] instanceof Long) {
-                                    threadKey =
-                                            (Long) param.args[2];
-                                }
+                                final Long threadKey =
+                                        param.args[2] instanceof Long
+                                                ? (Long) param.args[2]
+                                                : null;
 
                                 String message =
                                         (String) param.args[5];
