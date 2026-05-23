@@ -31,7 +31,7 @@ public class MessageReceivedHook extends BaseHook {
 
         try {
 
-            String apiCode =
+            Integer apiCode =
                     gateway.unobfuscator.getAPICode(
                             OrcaUnobfuscator.API_NOTIFICATION
                     );
