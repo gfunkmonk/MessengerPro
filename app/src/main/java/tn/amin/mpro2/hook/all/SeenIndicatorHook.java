@@ -5,6 +5,7 @@ import java.util.Set;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedBridge;
 import de.robv.android.xposed.XposedHelpers;
+
 import tn.amin.mpro2.constants.OrcaClassNames;
 import tn.amin.mpro2.debug.Logger;
 import tn.amin.mpro2.hook.BaseHook;
@@ -15,6 +16,7 @@ import tn.amin.mpro2.hook.unobfuscation.OrcaUnobfuscator;
 import tn.amin.mpro2.orca.OrcaGateway;
 
 public class SeenIndicatorHook extends BaseHook {
+
     @Override
     public HookId getId() {
         return HookId.SEEN_INDICATOR_SEND;
@@ -26,44 +28,156 @@ public class SeenIndicatorHook extends BaseHook {
     }
 
     @Override
-    protected Set<XC_MethodHook.Unhook> injectInternal(OrcaGateway gateway) {
-        final Class<?> MailboxCoreJNI = XposedHelpers.findClass(OrcaClassNames.MAILBOX_SDK_JNI, gateway.classLoader);
-        return XposedBridge.hookAllMethods(MailboxCoreJNI, "dispatchVJOOOO", wrap(new XC_MethodHook() {
-            @Override
-            protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
-                Integer apiCode = gateway.unobfuscator.getAPICode(OrcaUnobfuscator.API_MESSAGE_SEEN);
+    protected Set<XC_MethodHook.Unhook> injectInternal(
+            OrcaGateway gateway
+    ) {
 
-                // If api code is specified manually by user
-                if (apiCode >= 0) {
-                    if (apiCode == param.args[0]) {
+        try {
 
-                        // Inside seen indicator dispatch
-                        notifyListenersWithResult((listener) -> ((SeenIndicatorListener) listener).onSeenIndicator());
-                        boolean allowSeen = !getListenersReturnValue().isConsumed || (Boolean) getListenersReturnValue().value;
-                        if (!allowSeen) {
-                            param.setResult(null);
-                        }
-                    }
-                }
+            final Class<?> mailboxCoreJNI =
+                    XposedHelpers.findClassIfExists(
+                            OrcaClassNames.MAILBOX_SDK_JNI,
+                            gateway.classLoader
+                    );
 
-                // Fallback method
-                else if (param.args[2].getClass().getName().equals(OrcaClassNames.MAILBOX) &&
-                        param.args[3].getClass().getName().equals(Long.class.getName())) {
+            if (mailboxCoreJNI == null) {
 
-                    Logger.verbose("Inside seen indicator dispatch");
-                    // Inside seen indicator dispatch
-                    notifyListenersWithResult((listener) -> ((SeenIndicatorListener) listener).onSeenIndicator());
-                    boolean allowSeen = !getListenersReturnValue().isConsumed || (Boolean) getListenersReturnValue().value;
-                    Logger.verbose("AllowSeen: " + allowSeen);
-                    if (!allowSeen) {
-                        param.setResult(null);
-                    }
-                }
+                Logger.error(
+                        "Mailbox SDK JNI class not found"
+                );
+
+                return null;
             }
-        }));
+
+            return XposedBridge.hookAllMethods(
+                    mailboxCoreJNI,
+                    "dispatchVJOOOO",
+
+                    wrap(new XC_MethodHook() {
+
+                        @Override
+                        protected void beforeHookedMethod(
+                                MethodHookParam param
+                        ) {
+
+                            try {
+
+                                if (param.args == null)
+                                    return;
+
+                                if (param.args.length < 4)
+                                    return;
+
+                                Integer apiCode =
+                                        gateway.unobfuscator
+                                                .getAPICode(
+                                                        OrcaUnobfuscator.API_MESSAGE_SEEN
+                                                );
+
+                                boolean insideSeenDispatch =
+                                        false;
+
+                                if (apiCode != null &&
+                                        apiCode >= 0) {
+
+                                    Object arg0 =
+                                            param.args[0];
+
+                                    if (arg0 instanceof Integer) {
+
+                                        insideSeenDispatch =
+                                                ((Integer) arg0)
+                                                        .equals(apiCode);
+                                    }
+                                }
+
+                                else {
+
+                                    Object arg2 =
+                                            param.args[2];
+
+                                    Object arg3 =
+                                            param.args[3];
+
+                                    if (arg2 != null &&
+                                            arg3 != null) {
+
+                                        String arg2Name =
+                                                arg2.getClass().getName();
+
+                                        String arg3Name =
+                                                arg3.getClass().getName();
+
+                                        insideSeenDispatch =
+                                                OrcaClassNames.MAILBOX.equals(
+                                                        arg2Name
+                                                )
+
+                                                &&
+
+                                                Long.class.getName().equals(
+                                                        arg3Name
+                                                );
+                                    }
+                                }
+
+                                if (!insideSeenDispatch)
+                                    return;
+
+                                Logger.verbose(
+                                        "Inside seen indicator dispatch"
+                                );
+
+                                notifyListenersWithResult(
+                                        listener ->
+
+                                                ((SeenIndicatorListener) listener)
+                                                        .onSeenIndicator()
+                                );
+
+                                HookListenerResult<?> result =
+                                        getListenersReturnValue();
+
+                                boolean allowSeen =
+                                        true;
+
+                                if (result != null &&
+                                        result.isConsumed) {
+
+                                    if (result.value instanceof Boolean) {
+
+                                        allowSeen =
+                                                (Boolean) result.value;
+                                    }
+                                }
+
+                                Logger.verbose(
+                                        "AllowSeen: "
+                                                + allowSeen
+                                );
+
+                                if (!allowSeen) {
+                                    param.setResult(null);
+                                }
+
+                            } catch (Throwable t) {
+
+                                Logger.error(t);
+                            }
+                        }
+                    })
+            );
+
+        } catch (Throwable t) {
+
+            Logger.error(t);
+
+            return null;
+        }
     }
 
     public interface SeenIndicatorListener {
+
         HookListenerResult<Boolean> onSeenIndicator();
     }
 }
