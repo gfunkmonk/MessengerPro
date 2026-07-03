@@ -2,7 +2,7 @@ package tn.amin.mpro2.constants;
 
 public class ModuleInfo {
     public static final String LINK_PATREON_PAGE = "https://www.patreon.com/AminGuermazi/";
-    public static final String LINK_GITHUB_PAGE = "https://github.com/Mino260806/MessengerPro/";
+    public static final String LINK_GITHUB_PAGE = "https://github.com/gfunkmonk/MessengerPro/";
     public static final String LINK_TELEGRAM_SUPPORT = "https://t.me/MProSupport/";
     public static final String LINK_GITHUB_WIKI_USAGE_GUIDE = "https://github.com/Mino260806/MessengerPro/wiki/Usage-Guide/";
 

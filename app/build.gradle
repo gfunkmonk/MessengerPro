@@ -7,16 +7,16 @@ android {
 
     namespace 'tn.amin.mpro2'
 
-    compileSdk 36
+    compileSdk 32
 
     defaultConfig {
 
         applicationId "tn.amin.mpro2"
 
         minSdk 26
-        targetSdk 36
+        targetSdk 32
 
-        versionCode 12
+        versionCode 11
         versionName "1.0.13-gfunk"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -107,6 +107,8 @@ dependencies {
     implementation 'com.mojang:brigadier:1.0.18'
 
     implementation 'io.github.neonorbit:dexplore:1.4.5'
+
+    implementation ("com.google.guava:guava:32.0.0-android")
 
     compileOnly 'de.robv.android.xposed:api:82'
 
