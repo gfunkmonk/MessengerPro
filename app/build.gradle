@@ -17,7 +17,7 @@ android {
         targetSdk 36
 
         versionCode 12
-        versionName "1.0.12"
+        versionName "1.0.13-gfunk"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

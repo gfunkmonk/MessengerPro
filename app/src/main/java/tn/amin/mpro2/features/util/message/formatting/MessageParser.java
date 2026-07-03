@@ -31,10 +31,12 @@ public class MessageParser {
         mParser = new TextParser.Builder()
                 .setNodeScanners(Arrays.asList(
                         new SimpleNodeScanner("*", "*", 5),
-                        new SimpleNodeScanner("~", "~", 5),
+                        new SimpleNodeScanner("-", "-", 5),
                         new SimpleNodeScanner("!", "!", 5),
                         new SimpleNodeScanner("_", "_", 5),
                         new SimpleNodeScanner("#", "#", 5),
+                        new SimpleNodeScanner("~", "~", 5),
+                        new SimpleNodeScanner("+", "+", 5),
                         new SimpleNodeScanner("{", "}", 4),
                         new LinkNodeScanner()
                 ))

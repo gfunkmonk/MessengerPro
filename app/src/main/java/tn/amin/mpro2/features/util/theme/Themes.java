@@ -26,6 +26,11 @@ public class Themes {
 
             new ThemeInfo("Red", new StaticThemeColorSupplier(Color.RED)),
             new ThemeInfo("Yellow", new StaticThemeColorSupplier(Color.YELLOW)),
+            new ThemeInfo("Pink", new StaticThemeColorSupplier(Color.parseColor("#ff69b4"))),
+            new ThemeInfo("Orange", new StaticThemeColorSupplier(Color.parseColor("#ffa500"))),
+            new ThemeInfo("Chartreuse", new StaticThemeColorSupplier(Color.parseColor("#dfff00"))),
+            new ThemeInfo("Purple", new StaticThemeColorSupplier(Color.parseColor("#9d00ff"))),
+            new ThemeInfo("Brown", new StaticThemeColorSupplier(Color.parseColor("#b87333"))),
             new ThemeInfo("Custom", new CustomThemeColorSupplier())
 
 //            new ThemeInfo("Custom", null)
