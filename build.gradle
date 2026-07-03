@@ -16,6 +16,10 @@ buildscript {
         maven {
             url "https://libraries.minecraft.net"
         }
+
+        maven {
+            url "https://api.xposed.info/"
+        }
     }
 
     dependencies {
@@ -41,6 +45,10 @@ allprojects {
 
         maven {
             url "https://libraries.minecraft.net"
+        }
+
+        maven {
+            url "https://api.xposed.info/"
         }
     }
 }
