@@ -17,7 +17,6 @@ package tn.amin.mpro2.features.util.theme.monet;
  */
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.VisibleForTesting;
 
 import tn.amin.mpro2.features.util.theme.monet.utils.ColorUtils;
 
@@ -25,7 +24,6 @@ import tn.amin.mpro2.features.util.theme.monet.utils.ColorUtils;
 /**
  * Generate sets of colors that are shades of the same color
  */
-@VisibleForTesting
 public class Shades {
     /**
      *  Combining the ability to convert between relative luminance and perceptual luminance with
