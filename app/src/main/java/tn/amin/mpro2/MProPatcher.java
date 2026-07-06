@@ -340,9 +340,11 @@ public class MProPatcher implements
                     mToolbar.attacher.detach();
                 }
 
-                mToolbar = MProToolbar.summon(activity, mPreferences, gateway.res, mFeatureManager,
-                        this, mPreferences.getToolbarX(), mPreferences.getToolbarY());
-                mToolbar.setVisibility(View.GONE);
+                if (mPreferences != null) {
+                    mToolbar = MProToolbar.summon(activity, mPreferences, gateway.res, mFeatureManager,
+                            this, mPreferences.getToolbarX(), mPreferences.getToolbarY());
+                    mToolbar.setVisibility(View.GONE);
+                }
                 notifySetupFinished();
             }, 500);
         });
